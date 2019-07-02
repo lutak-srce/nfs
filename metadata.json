@@ -227,5 +227,5 @@
     "spec/fixtures/modules/stdlib/spec/unit/puppet/parser/functions/is_numeric_spec.rb": "0527750a0960bae36c14f6705fd50f37"
   },
   "project_page": "https://github.com/haraldsk/puppet-module-nfs",
-  "license": "Apache License, Version-2.0-or-later"
+  "license": "Apache-2.0"
 }
