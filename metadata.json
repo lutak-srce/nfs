@@ -14,9 +14,6 @@
   "summary": "nfs client and server module",
   "source": "git@github.com:haraldsk/puppet-module-nfs.git",
   "author": "haraldsk@redpill-linpro.com",
-  "types": [
-
-  ],
   "name": "haraldsk-nfs",
   "checksums": {
     "spec/fixtures/modules/stdlib/lib/puppet/parser/functions/parsejson.rb": "e7f968c34928107b84cd0860daf50ab1",
