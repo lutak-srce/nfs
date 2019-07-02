@@ -88,7 +88,7 @@ class nfs::client::redhat::service {
   if $facts['os']['release']['major'] == '7' {
       service {"rpcbind":
         ensure    => running,
-        provider  => redhat,
+        provider  => systemd,
         enable    => true,
         hasstatus => true,
         require => [Package["rpcbind"], Package["nfs-utils"]],
