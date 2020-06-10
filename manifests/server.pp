@@ -62,7 +62,7 @@ class nfs::server (
 
 class nfs::server::configure {
 
-  concat {'/etc/exports': 
+  concat {'/etc/exports':
     require => Class["nfs::server::${nfs::server::osfamily}"]
   }
 
@@ -88,7 +88,7 @@ class nfs::server::nfs_v4::configure {
       order   => 02
   }
   file {
-    "${nfs::server::nfs_v4_export_root}":
+    $nfs::server::nfs_v4_export_root:
       ensure => directory,
   }
 
@@ -100,7 +100,7 @@ class nfs::server::nfs_v4::configure {
     options   => $nfs::server::nfs_v4_root_export_options,
     bindmount => $nfs::server::nfs_v4_root_export_bindmount,
     tag       => $nfs::server::nfs_v4_root_export_tag,
-    server    => "${::clientcert}",
+    server    => $::clientcert,
   }
 }
 

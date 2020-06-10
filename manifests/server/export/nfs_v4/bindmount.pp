@@ -6,15 +6,15 @@ define nfs::server::export::nfs_v4::bindmount (
 
   $expdir = "${nfs::server::nfs_v4_export_root}/${v4_export_name}"
 
-  nfs::mkdir { "${expdir}": }
+  nfs::mkdir { $expdir: }
 
-  mount { "${expdir}":
+  mount { $expdir:
     ensure  => $ensure,
-    device  => "${name}",
+    device  => $name,
     atboot  => true,
     fstype  => 'none',
     options => $bind,
-    require => Nfs::Mkdir["${expdir}"],
+    require => Nfs::Mkdir[$expdir],
   }
 
 }

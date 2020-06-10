@@ -3,8 +3,8 @@ class nfs::client::redhat (
   $nfs_v4_idmap_domain = undef
 ) inherits nfs::client::redhat::params {
 
-  include nfs::client::redhat::install, 
-    nfs::client::redhat::configure, 
+  include nfs::client::redhat::install,
+    nfs::client::redhat::configure,
     nfs::client::redhat::service
 
 }
@@ -48,57 +48,56 @@ class nfs::client::redhat::service {
   }
 
   if $facts['os']['release']['major'] == '7' {
-    service {"nfslock":
+    service { 'nfslock' :
       ensure    => running,
       enable    => true,
       provider  => redhat,
       hasstatus => true,
     }
   } else {
-    service {"nfslock":
-      ensure     => running,
+    service { 'nfslock':
+      ensure    => running,
       enable    => true,
       hasstatus => true,
-      require => $nfs::client::redhat::osmajor ? {
-        6 => Service["rpcbind"],
-        5 => [Package["portmap"], Package["nfs-utils"]]
+      require   => $nfs::client::redhat::osmajor ? {
+        6 => Service['rpcbind'],
+        5 => [Package['portmap'], Package['nfs-utils']]
       },
     }
   }
 
-
   if $facts['os']['release']['major'] != '7' {
-    service { "netfs":
+    service { 'netfs' :
       enable  => true,
       require => $nfs::client::redhat::osmajor ? {
-        6 => Service["nfslock"],
-        5 => [Service["portmap"], Service["nfslock"]],
+        6 => Service['nfslock'],
+        5 => [Service['portmap'], Service['nfslock']],
       },
     }
   }
 
   if $facts['os']['release']['major'] == '7' {
-      service {"rpcbind":
+      service { 'rpcbind' :
         ensure    => running,
         provider  => systemd,
         enable    => true,
         hasstatus => true,
-        require => [Package["rpcbind"], Package["nfs-utils"]],
+        require   => [Package['rpcbind'], Package['nfs-utils']],
       }
   } else {
     if $nfs::client::redhat::osmajor == 6 {
-      service {"rpcbind":
+      service {'rpcbind':
         ensure    => running,
         enable    => true,
         hasstatus => true,
-        require => [Package["rpcbind"], Package["nfs-utils"]],
+        require   => [Package['rpcbind'], Package['nfs-utils']],
       }
     } elsif $nfs::client::redhat::osmajor == 5 {
-      service { "portmap":
+      service { 'portmap':
         ensure    => running,
         enable    => true,
         hasstatus => true,
-        require => [Package["portmap"], Package["nfs-utils"]],
+        require   => [Package['portmap'], Package['nfs-utils']],
       }
     }
   }
@@ -106,9 +105,9 @@ class nfs::client::redhat::service {
 
 class nfs::client::redhat::params {
 
-  if versioncmp($::operatingsystemrelease, "6.0") > 0 {
+  if versioncmp($::operatingsystemrelease, '6.0') > 0 {
     $osmajor = 6
-  } elsif versioncmp($::operatingsystemrelease, "5.0") > 0 {
+  } elsif versioncmp($::operatingsystemrelease, '5.0') > 0 {
     $osmajor = 5
   }
 
