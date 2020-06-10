@@ -1,5 +1,3 @@
-# Shamefully stolen from https://github.com/frimik/puppet-nfs
-# refactored a bit
 class nfs::client::redhat (
   $nfs_v4 = false,
   $nfs_v4_idmap_domain = undef
@@ -8,7 +6,6 @@ class nfs::client::redhat (
   include nfs::client::redhat::install, 
     nfs::client::redhat::configure, 
     nfs::client::redhat::service
-
 
 }
 class nfs::client::redhat::install {
@@ -33,7 +30,6 @@ class nfs::client::redhat::install {
 
 class nfs::client::redhat::configure {
 
-
   if $nfs::client::redhat::nfs_v4 {
     augeas {
       '/etc/idmapd.conf':
@@ -53,14 +49,10 @@ class nfs::client::redhat::service {
 
   if $facts['os']['release']['major'] == '7' {
     service {"nfslock":
-      ensure     => running,
+      ensure    => running,
       enable    => true,
       provider  => redhat,
       hasstatus => true,
-      require => $nfs::client::redhat::osmajor ? {
-        6 => Service["rpcbind"],
-        5 => [Package["portmap"], Package["nfs-utils"]]
-      },
     }
   } else {
     service {"nfslock":
@@ -119,6 +111,5 @@ class nfs::client::redhat::params {
   } elsif versioncmp($::operatingsystemrelease, "5.0") > 0 {
     $osmajor = 5
   }
+
 }
-
-
