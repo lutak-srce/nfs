@@ -1,16 +1,12 @@
-# Shamefully stolen from https://github.com/frimik/puppet-nfs
-# refactored a bit
 class nfs::client::redhat (
   $nfs_v4 = false,
   $nfs_v4_idmap_domain = undef
 ) inherits nfs::client::redhat::params {
-
   include nfs::client::redhat::install, 
-    nfs::client::redhat::configure, 
-    nfs::client::redhat::service
-
-
+          nfs::client::redhat::configure, 
+          nfs::client::redhat::service
 }
+
 class nfs::client::redhat::install {
 
   Package {
@@ -33,7 +29,6 @@ class nfs::client::redhat::install {
 
 class nfs::client::redhat::configure {
 
-
   if $nfs::client::redhat::nfs_v4 {
     augeas {
       '/etc/idmapd.conf':
@@ -51,20 +46,23 @@ class nfs::client::redhat::service {
     require => Class['nfs::client::redhat::configure']
   }
 
-  if $facts['os']['release']['major'] == '7' {
-    service {"nfslock":
-      ensure     => running,
+  if $facts['os']['release']['major'] == '8' {
+    service {"rpc-statd":
+      ensure    => running,
       enable    => true,
       provider  => redhat,
       hasstatus => true,
-      require => $nfs::client::redhat::osmajor ? {
-        6 => Service["rpcbind"],
-        5 => [Package["portmap"], Package["nfs-utils"]]
-      },
+    }
+  } elsif $facts['os']['release']['major'] == '7' {
+    service {"nfslock":
+      ensure    => running,
+      enable    => true,
+      provider  => redhat,
+      hasstatus => true,
     }
   } else {
     service {"nfslock":
-      ensure     => running,
+      ensure    => running,
       enable    => true,
       hasstatus => true,
       require => $nfs::client::redhat::osmajor ? {
@@ -74,8 +72,7 @@ class nfs::client::redhat::service {
     }
   }
 
-
-  if $facts['os']['release']['major'] != '7' {
+  if $facts['os']['release']['major'] != '7' and $facts['os']['release']['major'] != '8' {
     service { "netfs":
       enable  => true,
       require => $nfs::client::redhat::osmajor ? {
@@ -85,7 +82,7 @@ class nfs::client::redhat::service {
     }
   }
 
-  if $facts['os']['release']['major'] == '7' {
+  if $facts['os']['release']['major'] == '7' and $facts['os']['release']['major'] == '8' {
       service {"rpcbind":
         ensure    => running,
         provider  => systemd,
@@ -120,5 +117,3 @@ class nfs::client::redhat::params {
     $osmajor = 5
   }
 }
-
-
