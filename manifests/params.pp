@@ -6,10 +6,10 @@ class nfs::params (
   $nfs_v4_idmap_domain = $::domain
 ) {
 
-  # Somehow the ::osfamliy fact doesnt exist on some oled systems
+  # Somehow the ::osfamily fact doesnt exist on some oled systems
 
   case $::operatingsystem {
-    'centos', 'redhat', 'scientific', 'fedora': {
+    'centos', 'redhat', 'scientific', 'fedora', 'rocky': {
       $osfamily = 'redhat'
     } 'debian', 'Ubuntu': {
       $osfamily = 'debian'
