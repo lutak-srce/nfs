@@ -51,7 +51,7 @@ class nfs::client::redhat::service {
     require => Class['nfs::client::redhat::configure']
   }
 
-  if $facts['os']['release']['major'] == '8' {
+  if ( 0 + $facts['os']['release']['major'] >= 8 ) {
     service {"rpc-statd":
       ensure    => running,
       enable    => true,
@@ -82,7 +82,7 @@ class nfs::client::redhat::service {
   }
 
 
-  if $facts['os']['release']['major'] != '7' and $facts['os']['release']['major'] != '8' {
+  if ( 0 + $facts['os']['release']['major'] <= 6 ) {
     service { "netfs":
       enable  => true,
       require => $nfs::client::redhat::osmajor ? {
@@ -92,7 +92,7 @@ class nfs::client::redhat::service {
     }
   }
 
-  if $facts['os']['release']['major'] == '7' and $facts['os']['release']['major'] == '8' {
+  if ( 0 + $facts['os']['release']['major'] >= 7 ) {
       service {"rpcbind":
         ensure    => running,
         provider  => systemd,
